@@ -35,7 +35,7 @@
 
   var LS_KEY = 'next-busuanzi-last-success';
   var TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
-  var FALLBACK_URL = '{{ "/fallback_pv.json" | relative_url }};
+  var FALLBACK_URL = '{{ "/fallback_pv.json" | relative_url }}';
   var fallbackData = null;
   var fallbackLoaded = false;
   var busuanziCallbackFired = false;
@@ -52,6 +52,7 @@
       return last && (Date.now() - last) < TWENTY_FOUR_HOURS;
     } catch (e) {
       return false;
+    }
   }
 
   function getPageUrl() {
