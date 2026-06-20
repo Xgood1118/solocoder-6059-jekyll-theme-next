@@ -1,0 +1,59 @@
+---
+layout: null
+sitemap: false
+---
+{% assign site_time = site.time | date: '%s' | plus: 0 %}
+{% assign thirty_days = 2592000 %}
+{% assign total_pv = 0 %}
+{% assign total_uv = 0 %}
+{
+  "generated_at": {{ site.time | date_to_xmlschema | jsonify }},
+  "site_pv":
+  {%- for post in site.posts -%}
+    {%- assign word_count = post.content | number_of_words | plus: 0 -%}
+    {%- assign post_date = post.date | date: '%s' | plus: 0 -%}
+    {%- assign age_seconds = site_time | minus: post_date -%}
+    {%- if age_seconds > thirty_days -%}
+      {%- assign age_seconds = thirty_days -%}
+    {%- endif -%}
+    {%- assign age_factor_num = age_seconds | times: 1000 -%}
+    {%- assign age_factor = age_factor_num | divided_by: thirty_days -%}
+    {%- assign base_pv_num = word_count | times: 100 -%}
+    {%- assign base_pv = base_pv_num | divided_by: 1000 -%}
+    {%- if base_pv < 1 -%}{%- assign base_pv = 1 -%}{%- endif -%}
+    {%- if base_pv > 900 -%}{%- assign base_pv = 900 -%}{%- endif -%}
+    {%- assign age_bonus_num = age_factor | times: 99 -%}
+    {%- assign age_bonus = age_bonus_num | divided_by: 1000 -%}
+    {%- assign post_pv = base_pv | plus: age_bonus -%}
+    {%- if post_pv < 1 -%}{%- assign post_pv = 1 -%}{%- endif -%}
+    {%- if post_pv > 999 -%}{%- assign post_pv = 999 -%}{%- endif -%}
+    {%- assign total_pv = total_pv | plus: post_pv -%}
+  {%- endfor -%}
+  {{ total_pv }},
+  "site_uv":
+  {%- for post in site.posts -%}
+    {%- assign word_count = post.content | number_of_words | plus: 0 -%}
+    {%- assign post_date = post.date | date: '%s' | plus: 0 -%}
+    {%- assign age_seconds = site_time | minus: post_date -%}
+    {%- if age_seconds > thirty_days -%}
+      {%- assign age_seconds = thirty_days -%}
+    {%- endif -%}
+    {%- assign age_factor_num = age_seconds | times: 1000 -%}
+    {%- assign age_factor = age_factor_num | divided_by: thirty_days -%}
+    {%- assign base_uv_num = word_count | times: 30 -%}
+    {%- assign base_uv = base_uv_num | divided_by: 1000 -%}
+    {%- if base_uv < 1 -%}{%- assign base_uv = 1 -%}{%- endif -%}
+    {%- if base_uv > 300 -%}{%- assign base_uv = 300 -%}{%- endif -%}
+    {%- assign age_bonus_num = age_factor | times: 50000 -%}
+    {%- assign age_bonus = age_bonus_num | divided_by: 1000 -%}
+    {%- assign post_uv = base_uv | plus: age_bonus -%}
+    {%- if post_uv < 1 -%}{%- assign post_uv = 1 -%}{%- endif -%}
+    {%- if post_uv > 350 -%}{%- assign post_uv = 350 -%}{%- endif -%}
+    {%- assign total_uv = total_uv | plus: post_uv -%}
+  {%- endfor -%}
+  {{ total_uv }},
+  "posts": {
+    {% for post in site.posts %}{% assign word_count = post.content | number_of_words | plus: 0 %}{% assign post_date = post.date | date: '%s' | plus: 0 %}{% assign age_seconds = site_time | minus: post_date %}{% if age_seconds > thirty_days %}{% assign age_seconds = thirty_days %}{% endif %}{% assign age_factor_num = age_seconds | times: 1000 %}{% assign age_factor = age_factor_num | divided_by: thirty_days %}{% assign base_pv_num = word_count | times: 100 %}{% assign base_pv = base_pv_num | divided_by: 1000 %}{% if base_pv < 1 %}{% assign base_pv = 1 %}{% endif %}{% if base_pv > 900 %}{% assign base_pv = 900 %}{% endif %}{% assign age_bonus_num = age_factor | times: 99 %}{% assign age_bonus = age_bonus_num | divided_by: 1000 %}{% assign post_pv = base_pv | plus: age_bonus %}{% if post_pv < 1 %}{% assign post_pv = 1 %}{% endif %}{% if post_pv > 999 %}{% assign post_pv = 999 %}{% endif %}{% unless forloop.first %},{% endunless %}
+    "{{ post.url | relative_url | jsonify | remove: '"' }}": {{ post_pv }}{% endfor %}
+  }
+}

@@ -1,0 +1,19 @@
+{% assign page_lang = site.language %}
+{% assign url_parts = page.url | split: '/' %}
+{% if url_parts.size > 1 %}
+  {% assign first_segment = url_parts[1] %}
+  {% for lang in site.languages %}
+    {% if first_segment == lang.path %}
+      {% assign page_lang = lang.code %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% assign __ = site.data.languages[page_lang] %}
+{% if __ == nil %}
+  {% assign __ = site.data.languages[site.language] %}
+  <script>console.warn('[i18n] Translation not found for language "{{ page_lang }}", falling back to "{{ site.language }}");</script>
+{% endif %}
+
+{% assign current_lang = page_lang %}

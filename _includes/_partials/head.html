@@ -2,6 +2,23 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
+<script>
+(function() {
+  try {
+    var stored = JSON.parse(localStorage.getItem('next-theme') || '{}');
+    var theme = stored.theme;
+    var expires = stored.expires;
+    var now = Date.now();
+    if (!theme || !expires || now > expires) {
+      theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    document.documentElement.setAttribute('data-theme', theme);
+  } catch (e) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+</script>
+
 
 {% if site.pace %}
   {% assign pace_css_uri = site.vendors._internal | append: '/pace/'| append: site.pace_theme | append: '.min.css?v=1.0.2' | relative_url %}
@@ -123,7 +140,8 @@
       indexName: '{{ site.algolia.indexName }}',
       hits: {{ site.algolia_search.hits | jsonify }},
       labels: {{ site.algolia_search.labels | jsonify }}
-    }
+    },
+    exturl_whitelist: {{ site.exturl_whitelist | jsonify }}
   };
 </script>
 

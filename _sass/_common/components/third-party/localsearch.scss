@@ -114,4 +114,43 @@
     @include transform(translate(-50%, -50%));
     color: #ccc;
   }
+
+  .search-recommend {
+    text-align: center;
+    padding: 40px 20px;
+
+    .search-empty-title {
+      font-size: 18px;
+      color: $grey-dark;
+      margin-bottom: 10px;
+    }
+
+    .search-empty-subtitle {
+      font-size: 14px;
+      color: $grey;
+      margin-bottom: 20px;
+    }
+
+    .search-recommend-link {
+      display: inline-block;
+      padding: 8px 20px;
+      background: $body-bg-color;
+      border: 1px solid $border-color;
+      border-radius: 3px;
+      color: $link-color;
+      text-decoration: none;
+      border-bottom: 1px solid $border-color;
+      transition: all 0.2s ease;
+
+      i {
+        margin-right: 6px;
+      }
+
+      &:hover {
+        background: $whitesmoke;
+        color: $link-hover-color;
+        border-bottom-color: $link-decoration-hover-color;
+      }
+    }
+  }
 }

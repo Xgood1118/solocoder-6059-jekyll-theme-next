@@ -4,7 +4,8 @@ sitemap: false
 ---
 <?xml version="1.0" encoding="utf-8"?>
 <search>
-  {% for post in site.posts %}
+  {% assign sorted_posts = site.posts | sort: 'last_modified' | reverse %}
+  {% for post in sorted_posts %}
     <entry>
       <title><![CDATA[{{ post.title | strip_html }}]]></title>
       <url>{{ post.url | relative_url }}</url>
@@ -19,7 +20,8 @@ sitemap: false
           <tag> {{ tag | strip_html | xml_escape }} </tag>
         {% endfor %}
       </tags>
-      <tags></tags>
+      {% assign post_modified = post.last_modified | default: post.date %}
+      <last_modified>{{ post_modified | date_to_xmlschema }}</last_modified>
     </entry>
   {% endfor %}
 </search>

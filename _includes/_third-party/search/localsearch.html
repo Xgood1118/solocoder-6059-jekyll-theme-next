@@ -3,15 +3,27 @@
     // Popup Window;
     var isfetched = false;
     var isXml = true;
+    var searchIndex = null;
+    var debounceTimer = null;
+    var DEBOUNCE_MS = 250;
+    var INDEX_CACHE_KEY = 'next-search-index-cache';
     // Search DB path;
     var search_path = "{{ site.search.path }}";
     if (search_path.length === 0) {
-      search_path = "search.xml";
-    } else if (/json$/i.test(search_path)) {
+      search_path = "search.json";
+    }
+    if (/json$/i.test(search_path)) {
       isXml = false;
     }
     var path = "{{ site.baseurl }}/" + search_path;
-    // monitor main search box;
+
+    function getRecentPost() {
+      if (!searchIndex || searchIndex.length === 0) return null;
+      var sorted = searchIndex.slice().sort(function (a, b) {
+        return new Date(b.date || b.last_modified || 0) - new Date(a.date || a.last_modified || 0);
+      });
+      return sorted[0];
+    }
 
     var onPopupClose = function (e) {
       $('.popup').hide();
@@ -34,11 +46,59 @@
       $localSearchInput.focus();
     }
 
+    function getCachedIndex() {
+      try {
+        var cached = JSON.parse(localStorage.getItem(INDEX_CACHE_KEY) || 'null');
+        if (cached && Array.isArray(cached.posts)) {
+          return cached;
+        }
+      } catch (e) {}
+      return null;
+    }
+
+    function cacheIndex(posts, mtime) {
+      try {
+        localStorage.setItem(INDEX_CACHE_KEY, JSON.stringify({
+          posts: posts,
+          mtime: mtime,
+          storedAt: Date.now()
+        }));
+      } catch (e) {}
+    }
+
+    function needsRebuild(remoteMtime) {
+      var cached = getCachedIndex();
+      if (!cached) return true;
+      return String(cached.mtime) !== String(remoteMtime);
+    }
+
+    function getChangedPosts(remotePosts, cachedPosts) {
+      if (!cachedPosts) return remotePosts;
+      var cachedMap = {};
+      cachedPosts.forEach(function (p) { cachedMap[p.url] = p.last_modified; });
+      return remotePosts.filter(function (p) {
+        return cachedMap[p.url] !== p.last_modified;
+      });
+    }
+
+    function mergeIndex(remotePosts, cachedPosts) {
+      if (!cachedPosts || cachedPosts.length === 0) return remotePosts;
+      var mergedMap = {};
+      cachedPosts.forEach(function (p) { mergedMap[p.url] = p; });
+      remotePosts.forEach(function (p) { mergedMap[p.url] = p; });
+      var remoteUrls = {};
+      remotePosts.forEach(function (p) { remoteUrls[p.url] = true; });
+      var result = [];
+      Object.keys(mergedMap).forEach(function (url) {
+        if (remoteUrls[url]) result.push(mergedMap[url]);
+      });
+      return result;
+    }
+
     // search function;
     var searchFunc = function(path, search_id, content_id) {
       'use strict';
 
-      // start loading animation
       $("body")
         .append('<div class="search-popup-overlay local-search-pop-overlay">' +
           '<div id="search-loading-icon">' +
@@ -53,26 +113,59 @@
         dataType: isXml ? "xml" : "json",
         async: true,
         success: function(res) {
-          // get the contents from search data
+          var remoteMtime;
+          var remotePosts;
+
+          if (isXml) {
+            remotePosts = $("entry", res).map(function() {
+              var $entry = $(this);
+              return {
+                title: $("title", this).text(),
+                content: $("content", this).text(),
+                url: $("url", this).text(),
+                last_modified: $("last_modified", this).text() || '',
+                date: ''
+              };
+            }).get();
+            remoteMtime = String(Date.now());
+          } else {
+            remotePosts = res.posts || [];
+            remoteMtime = String(res.mtime || Date.now());
+          }
+
+          var cached = getCachedIndex();
+          var changed = getChangedPosts(remotePosts, cached ? cached.posts : null);
+
+          if (cached && changed.length < remotePosts.length) {
+            console.info('[LocalSearch] Incremental rebuild: ' + changed.length + '/' + remotePosts.length + ' posts changed.');
+          }
+
+          var merged = mergeIndex(remotePosts, cached ? cached.posts : null);
+          cacheIndex(merged, remoteMtime);
+          searchIndex = merged;
+
           isfetched = true;
           $('.popup').detach().appendTo('.header-inner');
-          var datas = isXml ? $("entry", res).map(function() {
-            return {
-              title: $("title", this).text(),
-              content: $("content",this).text(),
-              url: $("url" , this).text()
-            };
-          }).get() : res;
+          var datas = searchIndex;
+
           var input = document.getElementById(search_id);
           var resultContent = document.getElementById(content_id);
+
           var inputEventFunction = function() {
+            clearTimeout(debounceTimer);
             var searchText = input.value.trim().toLowerCase();
-            var keywords = searchText.split(/[\s\-]+/);
-            if (keywords.length > 1) {
-              keywords.push(searchText);
+
+            if (searchText.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>';
+              return;
             }
-            var resultItems = [];
-            if (searchText.length > 0) {
+
+            debounceTimer = setTimeout(function () {
+              var keywords = searchText.split(/[\s\-]+/);
+              if (keywords.length > 1) {
+                keywords.push(searchText);
+              }
+              var resultItems = [];
               // perform local searching
               datas.forEach(function(data) {
                 var isMatch = false;
@@ -249,28 +342,41 @@
                   });
                 }
               })
-            };
-            if (keywords.length === 1 && keywords[0] === "") {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
-            } else if (resultItems.length === 0) {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
-            } else {
-              resultItems.sort(function (resultLeft, resultRight) {
-                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
-                  return resultRight.searchTextCount - resultLeft.searchTextCount;
-                } else if (resultLeft.hitCount !== resultRight.hitCount) {
-                  return resultRight.hitCount - resultLeft.hitCount;
+              if (keywords.length === 1 && keywords[0] === "") {
+                resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+              } else if (resultItems.length === 0) {
+                var recent = getRecentPost();
+                var recommendHtml = '';
+                if (recent) {
+                  recommendHtml = '<div class="search-recommend">' +
+                    '<p class="search-empty-title">暂无相关文章</p>' +
+                    '<p class="search-empty-subtitle">推荐阅读：</p>' +
+                    '<a href="' + recent.url + '" class="search-recommend-link">' +
+                      '<i class="fa fa-file-text-o"></i> ' + recent.title +
+                    '</a>' +
+                  '</div>';
                 } else {
-                  return resultRight.id - resultLeft.id;
+                  recommendHtml = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>';
                 }
-              });
-              var searchResultList = '<ul class=\"search-result-list\">';
-              resultItems.forEach(function (result) {
-                searchResultList += result.item;
-              })
-              searchResultList += "</ul>";
-              resultContent.innerHTML = searchResultList;
-            }
+                resultContent.innerHTML = recommendHtml;
+              } else {
+                resultItems.sort(function (resultLeft, resultRight) {
+                  if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                    return resultRight.searchTextCount - resultLeft.searchTextCount;
+                  } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                    return resultRight.hitCount - resultLeft.hitCount;
+                  } else {
+                    return resultRight.id - resultLeft.id;
+                  }
+                });
+                var searchResultList = '<ul class=\"search-result-list\">';
+                resultItems.forEach(function (result) {
+                  searchResultList += result.item;
+                })
+                searchResultList += "</ul>";
+                resultContent.innerHTML = searchResultList;
+              }
+            }, DEBOUNCE_MS);
           }
 
           if ('auto' === '{{ site.local_search.trigger }}') {

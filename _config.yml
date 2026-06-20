@@ -12,6 +12,46 @@ author: John Doe
 language: en
 date_format: '%Y-%m-%d'
 
+# i18n - URL path prefix routing
+# Available languages with their path prefixes
+languages:
+  - code: en
+    name: English
+    path: en
+  - code: zh-Hans
+    name: 简体中文
+    path: zh-Hans
+  - code: de
+    name: Deutsch
+    path: de
+  - code: fr-FR
+    name: Français
+    path: fr-FR
+  - code: id
+    name: Indonesia
+    path: id
+  - code: ja
+    name: 日本語
+    path: ja
+  - code: ko
+    name: 한국어
+    path: ko
+  - code: pt-BR
+    name: Português (Brasil)
+    path: pt-BR
+  - code: pt
+    name: Português
+    path: pt
+  - code: ru
+    name: Русский
+    path: ru
+  - code: zh-hk
+    name: 香港繁體
+    path: zh-hk
+  - code: zh-tw
+    name: 臺灣正體
+    path: zh-tw
+
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com' and baseurl as '/child'
 url:
@@ -597,6 +637,15 @@ local_search:
 # Usage: {% exturl text url "title" %}
 # Alias: {% extlink text url "title" %}
 exturl: false
+
+# External URL whitelist - domains in this list will open directly without warning dialog
+exturl_whitelist:
+  - github.com
+  - google.com
+  - wikipedia.org
+  - stackoverflow.com
+  - jekyllrb.com
+  - fontawesome.io
 
 
 #! ---------------------------------------------------------------

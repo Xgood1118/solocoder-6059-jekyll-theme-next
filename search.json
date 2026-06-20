@@ -1,0 +1,28 @@
+---
+layout: null
+sitemap: false
+---
+{% assign search_posts = '' | split: '' %}
+{% for post in site.posts %}
+  {% assign post_modified = post.last_modified | default: post.date %}
+  {% assign post_obj = '' %}
+  {% capture post_obj %}
+    {
+      "title": {{ post.title | strip_html | jsonify }},
+      "url": {{ post.url | relative_url | jsonify }},
+      "content": {{ post.content | strip_html | strip_newlines | jsonify }},
+      "categories": {{ post.categories | jsonify }},
+      "tags": {{ post.tags | jsonify }},
+      "last_modified": {{ post_modified | date_to_xmlschema | jsonify }},
+      "date": {{ post.date | date_to_xmlschema | jsonify }}
+    }
+  {% endcapture %}
+  {% assign search_posts = search_posts | push: post_obj %}
+{% endfor %}
+{
+  "generated_at": {{ site.time | date_to_xmlschema | jsonify }},
+  "mtime": {{ site.time | date: '%s' | jsonify }},
+  "posts": [
+    {{ search_posts | join: ',' }}
+  ]
+}

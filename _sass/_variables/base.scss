@@ -8,21 +8,21 @@
 // colors for use across theme.
 // --------------------------------------------------
 
-$whitesmoke   : #f5f5f5;
-$gainsboro    : #eee;
-$gray-lighter : #ddd;
-$grey-light   : #ccc;
-$grey         : #bbb;
-$grey-dark    : #999;
-$grey-dim     : #666;
-$black-light  : #555;
-$black-dim    : #333;
-$black-deep   : #222;
-$red          : #ff2a2a;
-$blue-bright  : #87daff;
-$blue         : #0684bd;
-$blue-deep    : #262a30;
-$orange       : #fc6423;
+$whitesmoke   : var(--color-whitesmoke, #f5f5f5);
+$gainsboro    : var(--color-gainsboro, #eee);
+$gray-lighter : var(--color-gray-lighter, #ddd);
+$grey-light   : var(--color-grey-light, #ccc);
+$grey         : var(--color-grey, #bbb);
+$grey-dark    : var(--color-grey-dark, #999);
+$grey-dim     : var(--color-grey-dim, #666);
+$black-light  : var(--color-black-light, #555);
+$black-dim    : var(--color-black-dim, #333);
+$black-deep   : var(--color-black-deep, #222);
+$red          : var(--color-red, #ff2a2a);
+$blue-bright  : var(--color-blue-bright, #87daff);
+$blue         : var(--color-blue, #0684bd);
+$blue-deep    : var(--color-blue-deep, #262a30);
+$orange       : var(--color-orange, #fc6423);
 
 
 
@@ -31,23 +31,23 @@ $orange       : #fc6423;
 // --------------------------------------------------
 
 // Global text color on <body>
-$text-color                   : $black-light;
+$text-color                   : var(--text-color, $black-light);
 
 // Global link color.
-$link-color                   : $black-light;
-$link-hover-color             : $black-deep;
-$link-decoration-color        : $grey-light;
-$link-decoration-hover-color  : $black-deep;
+$link-color                   : var(--link-color, $black-light);
+$link-hover-color             : var(--link-hover-color, $black-deep);
+$link-decoration-color        : var(--link-decoration-color, $grey-light);
+$link-decoration-hover-color  : var(--link-decoration-hover-color, $black-deep);
 
 // Global border color.
-$border-color                 : $grey-light;
+$border-color                 : var(--border-color, $grey-light);
 
 // Background color for <body>
-$body-bg-color                : white;
+$body-bg-color                : var(--body-bg-color, white);
 
 // Selection
-$selection-bg                 : $blue-deep;
-$selection-color              : white;
+$selection-bg                 : var(--selection-bg, $blue-deep);
+$selection-color              : var(--selection-color, white);
 
 
 
@@ -134,8 +134,8 @@ $table-th-font-weight           : 700;
 $table-cell-padding             : 8px;
 $table-cell-border-right-color  : $gainsboro;
 $table-cell-border-bottom-color : $gray-lighter;
-$table-row-odd-bg-color         : #f9f9f9;
-$table-row-hover-bg-color       : $whitesmoke;
+$table-row-odd-bg-color         : var(--table-row-odd-bg-color, #f9f9f9);
+$table-row-hover-bg-color       : var(--table-row-hover-bg-color, $whitesmoke);
 
 
 
@@ -145,8 +145,8 @@ $code-font-family               : $font-family-monospace;
 $code-font-size                 : 13px;
 $code-font-size                 : if(type-of(jekyll-config('font.codes.size')) == 'number', jekyll-config('font.codes.size') + px, $code-font-size);
 $code-border-radius             : 3px;
-$code-foreground                : $black-light;
-$code-background                : $gainsboro;
+$code-foreground                : var(--code-foreground, $black-light);
+$code-background                : var(--code-background, $gainsboro);
 
 
 
@@ -156,14 +156,14 @@ $code-background                : $gainsboro;
 $btn-font-weight                : normal;
 
 $btn-default-radius             : 0;
-$btn-default-bg                 : $black-deep;
-$btn-default-color              : white;
+$btn-default-bg                 : var(--btn-default-bg, $black-deep);
+$btn-default-color              : var(--btn-default-color, white);
 $btn-default-font-size          : 14px;
 $btn-default-border-width       : 2px;
-$btn-default-border-color       : $black-deep;
-$btn-default-hover-bg           : white;
-$btn-default-hover-color        : $black-deep;
-$btn-default-hover-border-color : $black-deep;
+$btn-default-border-color       : var(--btn-default-border-color, $black-deep);
+$btn-default-hover-bg           : var(--btn-default-hover-bg, white);
+$btn-default-hover-color        : var(--btn-default-hover-color, $black-deep);
+$btn-default-hover-border-color : var(--btn-default-hover-border-color, $black-deep);
 
 
 
@@ -207,7 +207,7 @@ $gap-between-main-and-footer    : 100px;
 // Headband
 // --------------------------------------------------
 $headband-height                : 3px;
-$headband-bg                    : $black-deep;
+$headband-bg                    : var(--headband-bg, $black-deep);
 
 
 
@@ -219,20 +219,20 @@ $head-bg                        : transparent;
 
 // Site Meta
 $site-meta-text-align           : center;
-$brand-color                    : white;
-$brand-hover-color              : white;
-$brand-bg                       : $black-deep;
+$brand-color                    : var(--brand-color, white);
+$brand-hover-color              : var(--brand-hover-color, white);
+$brand-bg                       : var(--brand-bg, $black-deep);
 
 $logo-font-size                 : 20px;
 $logo-font-size                 : if(type-of(jekyll-config('font.logo.size')) == 'number', jekyll-config('font.logo.size') + px, $logo-font-size);
 
-$site-subtitle-color            : $grey-dark;
+$site-subtitle-color            : var(--site-subtitle-color, $grey-dark);
 $subtitle-font-size             : 13px;
-$subtitle-color                 : $grey-dark;
+$subtitle-color                 : var(--subtitle-color, $grey-dark);
 
 // Menu
 $menu-link-border               : transparent;
-$menu-link-hover-border         : $black-deep;
+$menu-link-hover-border         : var(--menu-link-hover-border, $black-deep);
 
 
 
@@ -242,7 +242,7 @@ $posts-expand-title-font-weight : $font-weight-normal;
 $post-copyright : (
   margin: 2em 0 0,
   padding: .5em 1em,
-  bg: #f9f9f9,
+  bg: var(--post-copyright-bg, #f9f9f9),
   border: (
     width: 3px,
     style: solid,
@@ -256,9 +256,9 @@ $post-copyright : (
 $posts-collapse-left            : 55px;
 $posts-collapse-left-mobile     : 5px;
 
-$read-more-color                : white;
+$read-more-color                : var(--read-more-color, white);
 $read-more-font-size            : 14px;
-$read-more-bg-color             : $black-deep;
+$read-more-bg-color             : var(--read-more-bg-color, $black-deep);
 $read-more-border-radius        : 0;
 
 
@@ -267,40 +267,41 @@ $read-more-border-radius        : 0;
 // Sidebar
 // Variables for sidebar section elements.
 // --------------------------------------------------
-$sidebar-nav-color                    : $black-light;
-$sidebar-nav-hover-color              : $whitesmoke;
-$sidebar-highlight                    : $blue-bright;
+$sidebar-bg-color               : var(--sidebar-bg-color, #222);
+$sidebar-nav-color              : var(--sidebar-nav-color, $black-light);
+$sidebar-nav-hover-color        : var(--sidebar-nav-hover-color, $whitesmoke);
+$sidebar-highlight              : var(--sidebar-highlight, $blue-bright);
 
-$site-author-image-padding            : 2px;
-$site-author-image-width              : 96px;
-$site-author-image-height             : auto;
-$site-author-image-border-width       : 2px;
-$site-author-image-border-color       : $black-dim;
+$site-author-image-padding      : 2px;
+$site-author-image-width        : 96px;
+$site-author-image-height       : auto;
+$site-author-image-border-width : 2px;
+$site-author-image-border-color : var(--site-author-image-border-color, $black-dim);
 
-$site-author-name-margin              : 5px 0 0;
-$site-author-name-color               : $whitesmoke;
-$site-author-name-align               : center;
-$site-author-name-weight              : normal;
+$site-author-name-margin        : 5px 0 0;
+$site-author-name-color         : var(--site-author-name-color, $whitesmoke);
+$site-author-name-align         : center;
+$site-author-name-weight        : normal;
 
-$site-description-font-size           : 14px;
-$site-description-color               : $grey-dark;
-$site-description-margin-top          : 5px;
-$site-description-align               : center;
+$site-description-font-size     : 14px;
+$site-description-color         : var(--site-description-color, $grey-dark);
+$site-description-margin-top    : 5px;
+$site-description-align         : center;
 
-$site-state-align                     : center;
-$site-state-item-count-font-size      : 18px;
-$site-state-item-count-color          : inherit;
-$site-state-item-name-font-size       : 13px;
-$site-state-item-name-color           : inherit;
-$site-state-item-border-color         : $black-dim;
+$site-state-align               : center;
+$site-state-item-count-font-size: 18px;
+$site-state-item-count-color    : inherit;
+$site-state-item-name-font-size : 13px;
+$site-state-item-name-color     : inherit;
+$site-state-item-border-color   : var(--site-state-item-border-color, $black-dim);
 
-$toc-link-color                       : $grey-dark;
-$toc-link-border-color                : $black-light;
-$toc-link-hover-color                 : $grey-light;
-$toc-link-hover-border-color          : $grey-light;
-$toc-link-active-color                : $sidebar-highlight;
-$toc-link-active-border-color         : $sidebar-highlight;
-$toc-link-active-current-color        : $sidebar-highlight;
+$toc-link-color                 : var(--toc-link-color, $grey-dark);
+$toc-link-border-color          : var(--toc-link-border-color, $black-light);
+$toc-link-hover-color           : var(--toc-link-hover-color, $grey-light);
+$toc-link-hover-border-color    : var(--toc-link-hover-border-color, $grey-light);
+$toc-link-active-color          : $sidebar-highlight;
+$toc-link-active-border-color   : $sidebar-highlight;
+$toc-link-active-current-color  : $sidebar-highlight;
 $toc-link-active-current-border-color : $sidebar-highlight;
 
 
@@ -308,23 +309,23 @@ $toc-link-active-current-border-color : $sidebar-highlight;
 // --------------------------------------------------
 
 // Back to top
-$b2t-opacity                  : 1;
-$b2t-position-bottom          : -100px;
-$b2t-position-bottom-on       : 19px;
-$b2t-position-right           : 30px;
-$b2t-font-size                : 12px;
-$b2t-color                    : white;
-$b2t-bg-color                 : $black-deep;
+$b2t-opacity                    : 1;
+$b2t-position-bottom            : -100px;
+$b2t-position-bottom-on         : 19px;
+$b2t-position-right             : 30px;
+$b2t-font-size                  : 12px;
+$b2t-color                      : white;
+$b2t-bg-color                   : var(--b2t-bg-color, $black-deep);
 
 // full-image
-$full-image-width             : 110%;
-$full-image-margin-horizontal : -5%;
-$full-image-margin-vertical   : 25px;
+$full-image-width               : 110%;
+$full-image-margin-horizontal   : -5%;
+$full-image-margin-vertical     : 25px;
 
 //  .post-expand .post-eof
 //  In Muse scheme, margin above and below the post separator
-$post-eof-margin-top          : 80px;  //  or 160px for more white space
-$post-eof-margin-bottom       : 60px;  //  or 120px for less white space
+$post-eof-margin-top            : 80px;  //  or 160px for more white space
+$post-eof-margin-bottom         : 60px;  //  or 120px for less white space
 
 
 // Iconography
@@ -332,5 +333,5 @@ $post-eof-margin-bottom       : 60px;  //  or 120px for less white space
 // --------------------------------------------------
 
 // blockquote-center icon
-$center-quote-left            : '../images/quote-l.svg';
-$center-quote-right           : '../images/quote-r.svg';
+$center-quote-left              : '../images/quote-l.svg';
+$center-quote-right             : '../images/quote-r.svg';

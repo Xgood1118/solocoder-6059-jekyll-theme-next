@@ -31,3 +31,14 @@
     }
   }
 }
+
+.busuanzi-fallback-note {
+  display: inline-block;
+  margin-left: 8px;
+
+  .busuanzi-local-estimate {
+    color: $grey-dark;
+    font-size: 12px;
+    font-style: italic;
+  }
+}

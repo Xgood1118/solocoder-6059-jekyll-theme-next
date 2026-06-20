@@ -1,0 +1,11 @@
+<div class="site-language-switcher">
+  <div class="language-switcher-wrapper">
+    <a href="javascript:;" class="language-switcher-trigger" title="Language">
+      <i class="fa fa-globe"></i>
+      <span class="language-current">{{ site.languages | where: "code", current_lang | map: "name" | first | default: current_lang }}</span>
+      <i class="fa fa-caret-down"></i>
+    </a>
+    <ul class="language-switcher-list" data-languages='{{ site.languages | jsonify }}' data-current="{{ current_lang }}" data-site-lang="{{ site.language }}">
+    </ul>
+  </div>
+</div>

@@ -1,6 +1,5 @@
 @mixin exturl {
   .exturl {
-    // Remove the gray background color from active links in IE 10.
     background-color: transparent;
 
     cursor: pointer;
@@ -11,10 +10,102 @@
     }
   }
 
-  // Improve readability when focused and also mouse hovered in all browsers.
   .exturl:active, .exturl:hover {
     outline: 0;
     color: $black-deep;
     border-bottom-color: $black-deep;
+  }
+}
+
+.exturl-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.exturl-dialog {
+  background: $body-bg-color;
+  border-radius: 6px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  max-width: 480px;
+  width: 100%;
+  padding: 24px;
+  color: $text-color;
+}
+
+.exturl-title {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: $text-color;
+}
+
+.exturl-message {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: $grey-dim;
+}
+
+.exturl-url {
+  margin: 0 0 20px 0;
+  padding: 10px 12px;
+  background: $whitesmoke;
+  border-radius: 4px;
+  word-break: break-all;
+  font-family: $font-family-monospace;
+  font-size: 13px;
+  color: $text-color;
+  outline: none;
+
+  &:focus {
+    box-shadow: 0 0 0 2px $blue;
+  }
+}
+
+.exturl-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.exturl-btn {
+  padding: 8px 20px;
+  font-size: 14px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+  outline: none;
+
+  &:focus {
+    box-shadow: 0 0 0 2px $blue;
+  }
+}
+
+.exturl-btn-cancel {
+  background: transparent;
+  color: $text-color;
+  border-color: $border-color;
+
+  &:hover {
+    background: $whitesmoke;
+  }
+}
+
+.exturl-btn-confirm {
+  background: $black-deep;
+  color: white;
+
+  &:hover {
+    opacity: 0.9;
   }
 }
